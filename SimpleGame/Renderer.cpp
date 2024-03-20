@@ -18,7 +18,10 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_WindowSizeY = windowSizeY;
 
 	//Load shaders
-	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
+	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs",
+		"./Shaders/SolidRect.fs");
+	m_ParticleShader = CompileShaders("./Shaders/Particle.vs",
+		"./Shaders/Particle.fs");
 	
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -48,15 +51,32 @@ void Renderer::CreateVertexBufferObjects()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
 
 	float vertices[] = { 
-		0.0f, 0.0f, 0.0f, 
-		1.0f, 0.0f, 0.0f, 
-		1.0f, 1.0f, 0.0f 
+		0.1f, 0.1f, 0.0f, 
+		-0.1f, 0.1f, 0.0f, 
+		-0.1f, -0.1f, 0.0f,
+		-0.1f, -0.1f, 0.0f,
+		0.1f, -0.1f, 0.0f,
+		0.1f, 0.1f, 0.0f
 	};
 
 	glGenBuffers(1, &m_TestVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, m_TestVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	float size = 0.05;
+	float ParticlleVertices[] = {
+		size, size, 0.0f,
+		-size, size, 0.0f,
+		-size, -size, 0.0f,
+		-size, -size, 0.0f,
+		size, -size, 0.0f,
+		size, size, 0.0f
+	};
+	float* a = new float[100];
+
+	glGenBuffers(1, &m_ParticleVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_ParticleVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ParticlleVertices), ParticlleVertices, GL_STATIC_DRAW);
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -151,7 +171,7 @@ GLuint Renderer::CompileShaders(char* filenameVS, char* filenameFS)
 	if (Success == 0) {
 		// shader program 로그를 받아옴
 		glGetProgramInfoLog(ShaderProgram, sizeof(ErrorLog), NULL, ErrorLog);
-		std::cout << filenameVS << ", " << filenameFS << " Error linking shader program\n" << ErrorLog;
+		std::cout << filenameVS << ", " << filenameFS << " Error linking shader program\n" << ErrorLog << std::endl;
 		return -1;
 	}
 
@@ -159,12 +179,12 @@ GLuint Renderer::CompileShaders(char* filenameVS, char* filenameFS)
 	glGetProgramiv(ShaderProgram, GL_VALIDATE_STATUS, &Success);
 	if (!Success) {
 		glGetProgramInfoLog(ShaderProgram, sizeof(ErrorLog), NULL, ErrorLog);
-		std::cout << filenameVS << ", " << filenameFS << " Error validating shader program\n" << ErrorLog;
+		std::cout << filenameVS << ", " << filenameFS << " Error validating shader program\n" << ErrorLog << std::endl;
 		return -1;
 	}
 
 	glUseProgram(ShaderProgram);
-	std::cout << filenameVS << ", " << filenameFS << " Shader compiling is done.";
+	std::cout << filenameVS << ", " << filenameFS << " Shader compiling is done." << std::endl;
 
 	return ShaderProgram;
 }
@@ -203,11 +223,32 @@ void Renderer::DrawTest()
 {
 
 	//Program select
-	glUseProgram(m_SolidRectShader);
+	GLuint shader = m_SolidRectShader;
+	glUseProgram(shader);
 
 	int attribPosition = glGetAttribLocation(m_SolidRectShader, "a_Position");
 	glEnableVertexAttribArray(attribPosition);
 	glBindBuffer(GL_ARRAY_BUFFER, m_TestVBO);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::DrawParticle() {
+
+	//Program select
+	GLuint shader = m_ParticleShader;
+	glUseProgram(shader);
+
+	int ulTime = glGetUniformLocation(shader, "uTime");
+	glUniform1f(ulTime, m_ParticleTime);
+	m_ParticleTime += 0.01;
+
+	int attribPosition = glGetAttribLocation(m_ParticleShader, "a_Position");
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_ParticleVBO);
 	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
