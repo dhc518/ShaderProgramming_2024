@@ -42,8 +42,10 @@ private:
 
 	GLuint m_ParticleShader = 0;
 	GLuint m_ParticleVBO = 0;
+	GLfloat m_ParticleTime = 0;
+
 	GLuint m_ParticleCloudVBO = 0;
 	GLuint m_ParticleCloudVertexCount = 0;
-	GLfloat m_ParticleTime = 0;
+	GLuint m_ParticleCloudShader = 0;
 };
 
