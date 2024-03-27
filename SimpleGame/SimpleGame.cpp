@@ -24,7 +24,9 @@ void RenderScene(void)
 
 	// Renderer Test
 	//g_Renderer->DrawSolidRect(0, 0, 0, 4, 1, 0, 1, 1);
-	g_Renderer->DrawParticle();
+	//g_Renderer->DrawTest();
+	//g_Renderer->DrawParticle();
+	g_Renderer->DrawParticleCloud();
 
 	glutSwapBuffers();
 }
@@ -36,17 +38,17 @@ void Idle(void)
 
 void MouseInput(int button, int state, int x, int y)
 {
-	RenderScene();
+	//RenderScene();
 }
 
 void KeyInput(unsigned char key, int x, int y)
 {
-	RenderScene();
+	//RenderScene();
 }
 
 void SpecialKeyInput(int key, int x, int y)
 {
-	RenderScene();
+	//RenderScene();
 }
 
 int main(int argc, char **argv)
