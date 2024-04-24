@@ -172,6 +172,8 @@
   <ItemGroup>
     <None Include="Shaders\FSSandbox.fs" />
     <None Include="Shaders\FSSandbox.vs" />
+    <None Include="Shaders\GridMesh.fs" />
+    <None Include="Shaders\GridMesh.vs" />
     <None Include="Shaders\Particle.fs" />
     <None Include="Shaders\Particle.vs" />
     <None Include="Shaders\ParticleCloud.fs" />
