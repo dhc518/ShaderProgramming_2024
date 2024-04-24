@@ -42,7 +42,8 @@ void RenderSceneTimer(int value)
 	//g_Renderer->DrawParticle();
 	//g_Renderer->DrawParticleCloud();
 	//g_Renderer->DrawFSSandbox();
-	g_Renderer->DrawGridMesh();
+	//g_Renderer->DrawGridMesh();
+	g_Renderer->DrawTextureSandbox();
 
 	glutSwapBuffers();
 	glutTimerFunc(16, RenderSceneTimer, 1);
